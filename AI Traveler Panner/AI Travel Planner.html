@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Travel Planner</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:#060708;
+    color:#fff;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:25px;
+}
+
+/* HEADER */
+
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 0 30px;
+    border-bottom:1px solid #252525;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.logoIcon{
+    width:52px;
+    height:52px;
+    border-radius:16px;
+    background:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:29px;
+}
+
+.logo h1{
+    font-size:22px;
+}
+
+.logo p{
+    color:#888;
+    font-size:12px;
+    margin-top:4px;
+}
+
+.status{
+    border:1px solid #333;
+    padding:9px 14px;
+    border-radius:30px;
+    color:#aaa;
+    font-size:12px;
+}
+
+
+/* HERO */
+
+.hero{
+    padding:55px 0 45px;
+    max-width:800px;
+}
+
+.hero small{
+    color:#9cff72;
+    font-weight:bold;
+    text-transform:uppercase;
+    letter-spacing:2px;
+}
+
+.hero h2{
+    font-size:clamp(42px,7vw,76px);
+    line-height:.95;
+    margin:18px 0;
+    letter-spacing:-4px;
+}
+
+.hero p{
+    color:#999;
+    font-size:18px;
+    line-height:1.7;
+}
+
+
+/* MAIN */
+
+.main{
+    display:grid;
+    grid-template-columns:380px 1fr;
+    gap:22px;
+}
+
+.card{
+    background:#0d1014;
+    border:1px solid #252a30;
+    border-radius:24px;
+    padding:23px;
+}
+
+.card h3{
+    font-size:21px;
+    margin-bottom:6px;
+}
+
+.subtitle{
+    color:#777;
+    font-size:13px;
+    margin-bottom:20px;
+}
+
+
+/* FORM */
+
+label{
+    display:block;
+    color:#bbb;
+    font-size:12px;
+    font-weight:bold;
+    margin:16px 0 7px;
+}
+
+input,
+textarea,
+select{
+    width:100%;
+    background:#080a0d;
+    color:#fff;
+    border:1px solid #292e35;
+    border-radius:12px;
+    padding:13px;
+    outline:none;
+    font-size:15px;
+}
+
+textarea{
+    height:90px;
+    resize:vertical;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+    border-color:#7fd85c;
+}
+
+.row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+
+/* INTERESTS */
+
+.interests{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.interest{
+    background:#090c10;
+    color:#aaa;
+    border:1px solid #292e35;
+    border-radius:30px;
+    padding:9px 11px;
+    font-size:12px;
+    cursor:pointer;
+}
+
+.interest:hover{
+    border-color:#777;
+}
+
+.interest.active{
+    color:#aaff87;
+    border-color:#8be56b;
+    background:#11200d;
+}
+
+
+/* BUTTON */
+
+.generate{
+    width:100%;
+    border:0;
+    background:#9bea70;
+    color:#071006;
+    padding:15px;
+    border-radius:13px;
+    font-size:15px;
+    font-weight:bold;
+    margin-top:20px;
+    cursor:pointer;
+}
+
+.generate:hover{
+    background:#b0ff8e;
+}
+
+.generate:disabled{
+    opacity:.5;
+}
+
+
+/* RESULT */
+
+.result{
+    min-height:600px;
+}
+
+.empty{
+    min-height:550px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:40px;
+}
+
+.emptyIcon{
+    font-size:60px;
+    margin-bottom:15px;
+}
+
+.empty h3{
+    font-size:27px;
+    margin-bottom:10px;
+}
+
+.empty p{
+    color:#777;
+    line-height:1.6;
+    max-width:430px;
+}
+
+
+/* RESULT CONTENT */
+
+#resultContent{
+    display:none;
+}
+
+.resultHeader{
+    margin-bottom:20px;
+}
+
+.resultHeader h3{
+    font-size:30px;
+    margin-bottom:8px;
+}
+
+.resultHeader p{
+    color:#999;
+    line-height:1.6;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:15px;
+}
+
+.stat{
+    background:#080b0e;
+    border:1px solid #292e35;
+    padding:15px;
+    border-radius:15px;
+}
+
+.stat span{
+    color:#777;
+    font-size:11px;
+    display:block;
+    margin-bottom:5px;
+}
+
+.stat strong{
+    font-size:16px;
+}
+
+
+/* DAY */
+
+.day{
+    border:1px solid #292e35;
+    background:#080b0e;
+    border-radius:18px;
+    padding:18px;
+    margin:12px 0;
+}
+
+.dayTop{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.dayTop h4{
+    font-size:18px;
+}
+
+.area{
+    color:#9bea70;
+    font-size:11px;
+}
+
+.stop{
+    border-left:2px solid #3c4650;
+    padding-left:13px;
+    margin-top:17px;
+}
+
+.stop strong{
+    display:block;
+    margin-bottom:5px;
+}
+
+.stop p{
+    color:#999;
+    font-size:13px;
+    line-height:1.5;
+}
+
+.dayInfo{
+    color:#777;
+    font-size:12px;
+    margin-top:15px;
+}
+
+
+/* INFO */
+
+.infoGrid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:14px;
+}
+
+.info{
+    background:#080b0e;
+    border:1px solid #292e35;
+    border-radius:17px;
+    padding:17px;
+}
+
+.info h4{
+    margin-bottom:12px;
+}
+
+.info ul{
+    padding-left:18px;
+    color:#aaa;
+    font-size:13px;
+    line-height:1.8;
+}
+
+
+/* ERROR */
+
+.error{
+    display:none;
+    background:#291010;
+    border:1px solid #6d3030;
+    color:#ff9e9e;
+    padding:12px;
+    border-radius:12px;
+    margin-top:12px;
+    font-size:13px;
+}
+
+.error.show{
+    display:block;
+}
+
+
+/* LOADING */
+
+.loading{
+    text-align:center;
+    padding:80px 20px;
+    color:#888;
+}
+
+.loader{
+    width:35px;
+    height:35px;
+    border:3px solid #333;
+    border-top-color:#9bea70;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin:0 auto 15px;
+}
+
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+
+/* MOBILE */
+
+@media(max-width:850px){
+
+    .main{
+        grid-template-columns:1fr;
+    }
+
+    .hero h2{
+        letter-spacing:-2px;
+    }
+
+}
+
+@media(max-width:550px){
+
+    .container{
+        padding:15px;
+    }
+
+    header{
+        padding-top:5px;
+    }
+
+    .status{
+        display:none;
+    }
+
+    .hero{
+        padding:40px 0;
+    }
+
+    .hero h2{
+        font-size:48px;
+    }
+
+    .row,
+    .stats,
+    .infoGrid{
+        grid-template-columns:1fr;
+    }
+
+    .card{
+        border-radius:20px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+<header>
+
+    <div class="logo">
+
+        <div class="logoIcon">
+            🌍
+        </div>
+
+        <div>
+            <h1>AI Travel Planner</h1>
+            <p>Plan smarter. Travel better.</p>
+        </div>
+
+    </div>
+
+    <div class="status">
+        ✨ AI Powered
+    </div>
+
+</header>
+
+
+<section class="hero">
+
+    <small>Your personal travel assistant</small>
+
+    <h2>
+        Turn your destination into a real trip.
+    </h2>
+
+    <p>
+        Tell us where you're going, your budget,
+        interests and number of days. AI will create
+        a personalized day-by-day travel plan.
+    </p>
+
+</section>
+
+
+<div class="main">
+
+
+<!-- INPUT -->
+
+<div class="card">
+
+    <h3>Build your trip</h3>
+
+    <p class="subtitle">
+        Give AI a few details about your trip.
+    </p>
+
+
+    <label>
+        Destination *
+    </label>
+
+    <input
+        id="destination"
+        placeholder="Example: Goa, Paris, Tokyo"
+    >
+
+
+    <div class="row">
+
+        <div>
+
+            <label>
+                Number of days *
+            </label>
+
+            <input
+                id="days"
+                type="number"
+                value="4"
+                min="1"
+                max="30"
+            >
+
+        </div>
+
+
+        <div>
+
+            <label>
+                Travelers
+            </label>
+
+            <input
+                id="travelers"
+                type="number"
+                value="1"
+                min="1"
+                max="20"
+            >
+
+        </div>
+
+    </div>
+
+
+    <div class="row">
+
+        <div>
+
+            <label>
+                Budget
+            </label>
+
+            <input
+                id="budget"
+                type="number"
+                placeholder="Example: 30000"
+            >
+
+        </div>
+
+
+        <div>
+
+            <label>
+                Currency
+            </label>
+
+            <select id="currency">
+
+                <option>INR</option>
+                <option>USD</option>
+                <option>EUR</option>
+                <option>GBP</option>
+                <option>AED</option>
+                <option>JPY</option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <label>
+        Interests *
+    </label>
+
+    <div class="interests">
+
+        <button class="interest" data-value="Sightseeing">
+            🏛️ Sightseeing
+        </button>
+
+        <button class="interest" data-value="Food">
+            🍜 Food
+        </button>
+
+        <button class="interest" data-value="Adventure">
+            🥾 Adventure
+        </button>
+
+        <button class="interest" data-value="Beaches">
+            🏖️ Beaches
+        </button>
+
+        <button class="interest" data-value="Shopping">
+            🛍️ Shopping
+        </button>
+
+        <button class="interest" data-value="Culture">
+            🎭 Culture
+        </button>
+
+        <button class="interest" data-value="Nature">
+            🌿 Nature
+        </button>
+
+        <button class="interest" data-value="Nightlife">
+            🌙 Nightlife
+        </button>
+
+    </div>
+
+
+    <label>
+        Travel style
+    </label>
+
+    <select id="style">
+
+        <option>Balanced</option>
+        <option>Budget-friendly</option>
+        <option>Relaxed</option>
+        <option>Fast-paced</option>
+        <option>Luxury</option>
+        <option>Family-friendly</option>
+
+    </select>
+
+
+    <label>
+        Additional requirements
+    </label>
+
+    <textarea
+        id="notes"
+        placeholder="Example: vegetarian food, avoid long walks, first time visiting..."
+    ></textarea>
+
+
+    <button
+        class="generate"
+        id="generate"
+    >
+        ✨ Generate My Trip
+    </button>
+
+
+    <div
+        class="error"
+        id="error"
+    ></div>
+
+</div>
+
+
+<!-- RESULT -->
+
+<div class="card result">
+
+    <div
+        class="empty"
+        id="empty"
+    >
+
+        <div>
+
+            <div class="emptyIcon">
+                🧭
+            </div>
+
+            <h3>
+                Your trip starts here
+            </h3>
+
+            <p>
+                Your AI-generated itinerary will appear here
+                with daily activities, budget estimates,
+                packing suggestions and travel tips.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div id="loading" class="loading" style="display:none">
+
+        <div class="loader"></div>
+
+        <p>
+            AI is planning your trip...
+        </p>
+
+    </div>
+
+
+    <div id="resultContent">
+
+        <div class="resultHeader">
+
+            <h3 id="tripTitle"></h3>
+
+            <p id="tripOverview"></p>
+
+        </div>
+
+
+        <div class="stats">
+
+            <div class="stat">
+
+                <span>
+                    Estimated total
+                </span>
+
+                <strong id="totalCost">
+                </strong>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span>
+                    Best time
+                </span>
+
+                <strong id="bestTime">
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="info">
+
+            <h4>
+                💰 Budget Breakdown
+            </h4>
+
+            <ul id="budgetList"></ul>
+
+            <p
+                id="budgetNote"
+                style="color:#777;font-size:12px;margin-top:10px"
+            ></p>
+
+        </div>
+
+
+        <div id="daysContainer"></div>
+
+
+        <div class="infoGrid">
+
+            <div class="info">
+
+                <h4>
+                    🎒 Packing Checklist
+                </h4>
+
+                <ul id="packingList"></ul>
+
+            </div>
+
+
+            <div class="info">
+
+                <h4>
+                    💡 Travel Tips
+                </h4>
+
+                <ul id="tipsList"></ul>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="info"
+            style="margin-top:13px"
+        >
+
+            <h4>
+                🔎 Verify Before Booking
+            </h4>
+
+            <ul id="verifyList"></ul>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<p style="
+text-align:center;
+color:#555;
+font-size:11px;
+padding:40px 0;
+">
+AI-generated plans are suggestions. Verify current
+prices, opening hours, weather and bookings before travelling.
+</p>
+
+</div>
+
+
+<!-- PUTER AI -->
+
+<script src="https://js.puter.com/v2/"></script>
+
+
+<script>
+
+const selectedInterests = new Set();
+
+
+/* INTEREST BUTTONS */
+
+document.querySelectorAll(".interest").forEach(button => {
+
+    button.addEventListener("click", function(){
+
+        event.preventDefault();
+
+        const value = this.dataset.value;
+
+        if(selectedInterests.has(value)){
+
+            selectedInterests.delete(value);
+
+            this.classList.remove("active");
+
+        }else{
+
+            selectedInterests.add(value);
+
+            this.classList.add("active");
+
+        }
+
+    });
+
+});
+
+
+/* GENERATE */
+
+document.getElementById("generate").addEventListener(
+    "click",
+    generateTrip
+);
+
+
+async function generateTrip(){
+
+    const destination =
+        document.getElementById("destination").value.trim();
+
+    const days =
+        document.getElementById("days").value;
+
+    const travelers =
+        document.getElementById("travelers").value;
+
+    const budget =
+        document.getElementById("budget").value;
+
+    const currency =
+        document.getElementById("currency").value;
+
+    const style =
+        document.getElementById("style").value;
+
+    const notes =
+        document.getElementById("notes").value.trim();
+
+
+    const interests =
+        [...selectedInterests].join(", ");
+
+
+    const error =
+        document.getElementById("error");
+
+
+    if(!destination){
+
+        showError(
+            "Please enter a destination."
+        );
+
+        return;
+
+    }
+
+
+    if(!days){
+
+        showError(
+            "Please enter the number of days."
+        );
+
+        return;
+
+    }
+
+
+    if(!interests){
+
+        showError(
+            "Please select at least one interest."
+        );
+
+        return;
+
+    }
+
+
+    error.classList.remove("show");
+
+
+    document.getElementById("empty")
+        .style.display="none";
+
+    document.getElementById("resultContent")
+        .style.display="none";
+
+    document.getElementById("loading")
+        .style.display="block";
+
+
+    const button =
+        document.getElementById("generate");
+
+    button.disabled=true;
+
+    button.innerText =
+        "🤖 Planning your trip...";
+
+
+    const prompt = `
+
+You are an expert AI travel planner.
+
+Create a practical and personalized travel itinerary.
+
+TRIP INFORMATION:
+
+Destination: ${destination}
+
+Number of days: ${days}
+
+Number of travelers: ${travelers}
+
+Budget: ${budget || "Not specified"} ${currency}
+
+Interests: ${interests}
+
+Travel style: ${style}
+
+Additional requirements:
+${notes || "None"}
+
+Create a realistic day-by-day travel plan.
+
+For every day include:
+
+Morning activity
+Afternoon activity
+Evening activity
+Transportation
+Food suggestions
+Approximate daily cost
+
+Also include:
+
+1. Trip overview
+2. Estimated total budget
+3. Budget breakdown
+4. Packing checklist
+5. Travel tips
+6. Best time to visit
+7. Things that should be verified before booking
+
+IMPORTANT:
+
+Do not pretend that prices, weather,
+opening hours or availability are live data.
+
+Clearly label estimates.
+
+Return ONLY valid JSON in this exact format:
+
+{
+"title":"",
+"overview":"",
+"totalCost":"",
+"bestTime":"",
+"budgetBreakdown":[],
+"budgetNote":"",
+"days":[
+{
+"day":1,
+"title":"",
+"area":"",
+"morning":{
+"place":"",
+"description":"",
+"cost":""
+},
+"afternoon":{
+"place":"",
+"description":"",
+"cost":""
+},
+"evening":{
+"place":"",
+"description":"",
+"cost":""
+},
+"transport":"",
+"food":"",
+"dayCost":""
+}
+],
+"packing":[],
+"tips":[],
+"verify":[]
+}
+
+`;
+
+
+    try{
+
+
+        /*
+        PUTER AI
+
+        This is what makes the application
+        actually communicate with an AI model.
+        */
+
+
+        const response =
+            await puter.ai.chat(prompt);
+
+
+        let text =
+            response.message
+            ? response.message.content
+            : response;
+
+
+        /*
+        Remove markdown JSON fences
+        */
+
+        text =
+            String(text)
+            .replace(/```json/gi,"")
+            .replace(/```/g,"")
+            .trim();
+
+
+        /*
+        Find JSON
+        */
+
+        const start =
+            text.indexOf("{");
+
+        const end =
+            text.lastIndexOf("}");
+
+
+        if(start === -1 || end === -1){
+
+            throw new Error(
+                "AI returned an unexpected response."
+            );
+
+        }
+
+
+        text =
+            text.substring(
+                start,
+                end + 1
+            );
+
+
+        const plan =
+            JSON.parse(text);
+
+
+        displayPlan(plan);
+
+
+    }catch(err){
+
+        console.error(err);
+
+        showError(
+            "AI could not create the trip. Please try again. " +
+            err.message
+        );
+
+        document.getElementById("empty")
+            .style.display="flex";
+
+    }
+
+
+    document.getElementById("loading")
+        .style.display="none";
+
+    button.disabled=false;
+
+    button.innerText =
+        "✨ Generate My Trip";
+
+}
+
+
+/* DISPLAY PLAN */
+
+function displayPlan(plan){
+
+    document.getElementById("resultContent")
+        .style.display="block";
+
+
+    document.getElementById("tripTitle")
+        .innerText =
+        plan.title || "Your Travel Plan";
+
+
+    document.getElementById("tripOverview")
+        .innerText =
+        plan.overview || "";
+
+
+    document.getElementById("totalCost")
+        .innerText =
+        plan.totalCost || "Estimate unavailable";
+
+
+    document.getElementById("bestTime")
+        .innerText =
+        plan.bestTime || "Check current conditions";
+
+
+    const budgetList =
+        document.getElementById("budgetList");
+
+
+    budgetList.innerHTML="";
+
+
+    if(Array.isArray(plan.budgetBreakdown)){
+
+        plan.budgetBreakdown.forEach(item=>{
+
+            const li =
+                document.createElement("li");
+
+            li.innerText=item;
+
+            budgetList.appendChild(li);
+
+        });
+
+    }
+
+
+    document.getElementById("budgetNote")
+        .innerText =
+        plan.budgetNote || "";
+
+
+    const daysContainer =
+        document.getElementById("daysContainer");
+
+
+    daysContainer.innerHTML="";
+
+
+    if(Array.isArray(plan.days)){
+
+        plan.days.forEach(day=>{
+
+            const div =
+                document.createElement("div");
+
+            div.className="day";
+
+
+            div.innerHTML=`
+
+                <div class="dayTop">
+
+                    <h4>
+                        Day ${escapeHTML(day.day)}
+                        ·
+                        ${escapeHTML(day.title)}
+                    </h4>
+
+                    <span class="area">
+                        ${escapeHTML(day.area)}
+                    </span>
+
+                </div>
+
+
+                <div class="stop">
+
+                    <strong>
+                        🌅 Morning ·
+                        ${escapeHTML(day.morning?.place)}
+                    </strong>
+
+                    <p>
+                        ${escapeHTML(day.morning?.description)}
+                    </p>
+
+                    <small>
+                        ${escapeHTML(day.morning?.cost)}
+                    </small>
+
+                </div>
+
+
+                <div class="stop">
+
+                    <strong>
+                        ☀️ Afternoon ·
+                        ${escapeHTML(day.afternoon?.place)}
+                    </strong>
+
+                    <p>
+                        ${escapeHTML(day.afternoon?.description)}
+                    </p>
+
+                    <small>
+                        ${escapeHTML(day.afternoon?.cost)}
+                    </small>
+
+                </div>
+
+
+                <div class="stop">
+
+                    <strong>
+                        🌙 Evening ·
+                        ${escapeHTML(day.evening?.place)}
+                    </strong>
+
+                    <p>
+                        ${escapeHTML(day.evening?.description)}
+                    </p>
+
+                    <small>
+                        ${escapeHTML(day.evening?.cost)}
+                    </small>
+
+                </div>
+
+
+                <div class="dayInfo">
+
+                    🚆 ${escapeHTML(day.transport)}
+
+                    &nbsp; • &nbsp;
+
+                    🍽️ ${escapeHTML(day.food)}
+
+                    &nbsp; • &nbsp;
+
+                    💰 ${escapeHTML(day.dayCost)}
+
+                </div>
+
+            `;
+
+
+            daysContainer.appendChild(div);
+
+        });
+
+    }
+
+
+    fillList(
+        "packingList",
+        plan.packing
+    );
+
+
+    fillList(
+        "tipsList",
+        plan.tips
+    );
+
+
+    fillList(
+        "verifyList",
+        plan.verify
+    );
+
+}
+
+
+/* LIST */
+
+function fillList(id,items){
+
+    const list =
+        document.getElementById(id);
+
+    list.innerHTML="";
+
+
+    if(!Array.isArray(items))
+        return;
+
+
+    items.forEach(item=>{
+
+        const li =
+            document.createElement("li");
+
+        li.innerText=item;
+
+        list.appendChild(li);
+
+    });
+
+}
+
+
+/* ERROR */
+
+function showError(message){
+
+    const error =
+        document.getElementById("error");
+
+    error.innerText =
+        "❌ " + message;
+
+    error.classList.add("show");
+
+}
+
+
+/* SAFETY */
+
+function escapeHTML(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+</script>
+
+</body>
+</html>
